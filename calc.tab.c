@@ -83,6 +83,8 @@
 #include <stdio.h>
 #include <ctype.h>
 #define YYSTYPE double 
+void yyerror(const char *);
+int yylex(void);
 
 
 /* Enabling traces.  */
@@ -116,7 +118,7 @@ typedef int YYSTYPE;
 
 
 /* Line 216 of yacc.c.  */
-#line 120 "calc.tab.c"
+#line 122 "calc.tab.c"
 
 #ifdef short
 # undef short
@@ -399,7 +401,7 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    15,    15,    16,    19,    20,    23,    24,    25,    28
+       0,    17,    17,    18,    21,    22,    25,    26,    27,    30
 };
 #endif
 
@@ -1301,38 +1303,38 @@ yyreduce:
   switch (yyn)
     {
         case 4:
-#line 19 "calc.y"
+#line 21 "calc.y"
     { printf("Result: %f\n", (yyvsp[(1) - (2)])); ;}
     break;
 
   case 5:
-#line 20 "calc.y"
+#line 22 "calc.y"
     { yyerrok; ;}
     break;
 
   case 6:
-#line 23 "calc.y"
+#line 25 "calc.y"
     { (yyval) = (yyvsp[(1) - (3)]) + (yyvsp[(3) - (3)]); ;}
     break;
 
   case 7:
-#line 24 "calc.y"
+#line 26 "calc.y"
     { (yyval) = (yyvsp[(1) - (3)]) - (yyvsp[(3) - (3)]); ;}
     break;
 
   case 8:
-#line 25 "calc.y"
+#line 27 "calc.y"
     { (yyval) = (yyvsp[(1) - (1)]); ;}
     break;
 
   case 9:
-#line 28 "calc.y"
+#line 30 "calc.y"
     { (yyval) = (yyvsp[(1) - (1)]); ;}
     break;
 
 
 /* Line 1267 of yacc.c.  */
-#line 1336 "calc.tab.c"
+#line 1338 "calc.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -1546,7 +1548,7 @@ yyreturn:
 }
 
 
-#line 31 "calc.y"
+#line 33 "calc.y"
  
 int yylex (void) {
     int c = getchar(); /* read from stdin */
@@ -1560,9 +1562,12 @@ int yylex (void) {
     return c; /* anything else... return char itself */ 
 }
 
+
 void yyerror(const char *errmsg) {
-    printf("%s\n", errmsg); 
+    printf("%s\n", errmsg);
+    /* fprintf(stderr, "error: %s\n", errmsg); */
 } 
+
 int main() {
     printf("type an expression:\n"); 
     yyparse(); 

@@ -6,6 +6,8 @@
 #include <stdio.h>
 #include <ctype.h>
 #define YYSTYPE double 
+void yyerror(const char *);
+int yylex(void);
 %}
 
 %token NUMBER /* define token type for numbers */
@@ -41,9 +43,12 @@ int yylex (void) {
     return c; /* anything else... return char itself */ 
 }
 
+
 void yyerror(const char *errmsg) {
-    printf("%s\n", errmsg); 
+    printf("%s\n", errmsg);
+    /* fprintf(stderr, "error: %s\n", errmsg); */
 } 
+
 int main() {
     printf("type an expression:\n"); 
     yyparse(); 
