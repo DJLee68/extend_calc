@@ -3,6 +3,8 @@
 %{ 
 /* C declarations and #define statements go here */
 #include <math.h>
+#include <stdio.h>
+#include <ctype.h>
 #define YYSTYPE double 
 %}
 
