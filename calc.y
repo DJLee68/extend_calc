@@ -12,6 +12,9 @@ int yylex(void);
 
 %token NUMBER /* define token type for numbers */
 %left '+' '-' /* + and - are left associative */
+%left '*' '/' /* * and / are left associative */
+%left '^' '%' /* ^ and % are left associative */
+
 %% /* cal c grammar rules */
 
 input   : /* empty production to allow an empty input */
@@ -24,13 +27,14 @@ line    : expr '\n'     { printf("Result: %f\n", $1); }
 
 expr    : expr '+' term { $$ = $1 + $3; }
         | expr '-' term { $$ = $1 - $3; }
-        | expr '^' term { $$ = $1 ^ $3; }
         | term          { $$ = $1; }
         ;
+
 
 term    : NUMBER        { $$ = $1; }
         ;
 
+factor  : '(' expr ')'  { $$ = $2; }
 %% 
 int yylex (void) {
     int c = getchar(); /* read from stdin */
