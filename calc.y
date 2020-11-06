@@ -5,15 +5,17 @@
 #include <math.h>
 #include <stdio.h>
 #include <ctype.h>
+#include <string.h>
 #define YYSTYPE double 
 void yyerror(const char *);
 int yylex(void);
 %}
 
 %token NUMBER /* define token type for numbers */
+%token BAR
 %left '+' '-' /* + and - are left associative */
-%left '*' '/' /* * and / are left associative */
-%left '^' '%' /* ^ and % are left associative */
+%left '*' '/' '%' /* * and / and % are left associative */
+%right '^' /* ^ is right associative */
 
 %% /* cal c grammar rules */
 
@@ -22,7 +24,8 @@ input   : /* empty production to allow an empty input */
         ;
 
 line    : expr '\n'     { printf("Result: %f\n", $1); }
-        | error '\n'    { yyerrok; }
+        | '\n'    { printf("\n"); } 
+        | BAR     { printf("Result: %f\n", $1)}
         ;
 
 expr    : expr '+' term { $$ = $1 + $3; }
@@ -30,11 +33,19 @@ expr    : expr '+' term { $$ = $1 + $3; }
         | term          { $$ = $1; }
         ;
 
-
-term    : NUMBER        { $$ = $1; }
+/* if ($3 == 0) { yyerror("You can't divide by zero"); } else  */
+term    : term '*' factor   { $$ = $1 * $3; }
+        | term '/' factor   { $$ = $1 / $3; }
+        | term '^' factor   { $$ = pow($1, $3); }
+        | term '%' factor   { $$ = fmod($1, $3); }
+        | factor            { $$ = $1; }
         ;
 
 factor  : '(' expr ')'  { $$ = $2; }
+        | NUMBER        { $$ = $1; }
+        | '-' NUMBER    { $$ = -$2; }
+        ;
+
 %% 
 int yylex (void) {
     int c = getchar(); /* read from stdin */
@@ -45,6 +56,15 @@ int yylex (void) {
         scanf("%lf",&yylval); /* get value using scanf */
         return NUMBER; /* return the token type */
     }
+    if (isalpha(c)) {
+        printf("bi");
+        ungetc(c, stdin);
+        if(c=='_') {
+            printf("hi");
+            return BAR;
+        }
+    }
+    
     return c; /* anything else... return char itself */ 
 }
 
