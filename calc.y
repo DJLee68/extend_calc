@@ -9,11 +9,10 @@
 #define YYSTYPE double 
 void yyerror(const char *);
 int yylex(void);
-double temp;
+double temp = 0;
 %}
 
 %token NUMBER /* define token type for numbers */
-%token BAR
 %left '+' '-' /* + and - are left associative */
 %left '*' '/' '%' /* * and / and % are left associative */
 %right '^' /* ^ is right associative */
@@ -25,7 +24,7 @@ input   : /* empty production to allow an empty input */
         ;
 
 line    : expr '\n'     { temp=$1; printf("Result: %f\n", $1); temp=$1; }
-        | '\n'     {}
+        | '\n'          {}
         ;
 
 expr    : expr '+' term { $$ = $1 + $3; }
@@ -33,7 +32,6 @@ expr    : expr '+' term { $$ = $1 + $3; }
         | term          { $$ = $1; }
         ;
 
-/* if ($3 == 0) { yyerror("You can't divide by zero"); } else  */
 term    : term '*' factor   { $$ = $1 * $3; }
         | term '/' factor   { $$ = $1 / $3; }
         | term '^' factor   { $$ = pow($1, $3); }
@@ -44,7 +42,7 @@ term    : term '*' factor   { $$ = $1 * $3; }
 factor  : '(' expr ')'  { $$ = $2; }
         | NUMBER        { $$ = $1; }
         | '-' NUMBER    { $$ = -$2; }
-        | '_'           { $$ = temp}
+        | '_'           { $$ = temp; }
         ;
 
 %% 
