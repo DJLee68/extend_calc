@@ -9,6 +9,7 @@
 #define YYSTYPE double 
 void yyerror(const char *);
 int yylex(void);
+double temp;
 %}
 
 %token NUMBER /* define token type for numbers */
@@ -23,9 +24,8 @@ input   : /* empty production to allow an empty input */
         | input line
         ;
 
-line    : expr '\n'     { printf("Result: %f\n", $1); }
-        | '\n'    { printf("\n"); } 
-        | BAR     { printf("Result: %f\n", $1)}
+line    : expr '\n'     { temp=$1; printf("Result: %f\n", $1); temp=$1; }
+        | '\n'     {}
         ;
 
 expr    : expr '+' term { $$ = $1 + $3; }
@@ -44,6 +44,7 @@ term    : term '*' factor   { $$ = $1 * $3; }
 factor  : '(' expr ')'  { $$ = $2; }
         | NUMBER        { $$ = $1; }
         | '-' NUMBER    { $$ = -$2; }
+        | '_'           { $$ = temp}
         ;
 
 %% 
@@ -51,18 +52,12 @@ int yylex (void) {
     int c = getchar(); /* read from stdin */
     if (c < 0) return 0; /* end of the input*/ 
     while (c == ' ' || c == '\t') c = getchar(); 
+    
     if (isdigit(c) || c == '.') {
+        
         ungetc(c, stdin); /* put c back into input */ 
         scanf("%lf",&yylval); /* get value using scanf */
         return NUMBER; /* return the token type */
-    }
-    if (isalpha(c)) {
-        printf("bi");
-        ungetc(c, stdin);
-        if(c=='_') {
-            printf("hi");
-            return BAR;
-        }
     }
     
     return c; /* anything else... return char itself */ 
